@@ -1,0 +1,3 @@
+dnslib
+fastapi
+uvicorn

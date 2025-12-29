@@ -15,7 +15,7 @@ class Resolver(BaseResolver):
 def start_dns():
     server = DNSServer(
         Resolver(),
-        port=1053,
+        port=53,
         address="0.0.0.0",
         tcp=False
     )

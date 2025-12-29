@@ -37,3 +37,5 @@ class DNSCache:
             # LRU 淘汰
             if len(self.store) > self.max_size:
                 self.store.popitem(last=False)
+
+dns_cache = DNSCache()

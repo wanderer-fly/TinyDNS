@@ -1,6 +1,8 @@
 from fastapi import Request, Response, HTTPException
 from dnslib import DNSRecord
 from dns.resolver import resolve_query
+from dns.core import handle_dns
+from dns.context import DNSContext
 from api import app
 import base64
 
@@ -24,14 +26,14 @@ async def dns_query_get(request: Request):
         except Exception as e:
             raise HTTPException(status_code=400, detail=f"Bad DNS message: {e}")
         
-        class Ctx:
-            client_ip = request.client.host
-            client_port = request.client.port
-            protocol = "https"
+        ctx = DNSContext(
+            client_ip=request.client.host,
+            client_port=request.client.port,
+            protocol="https"
+        )
         
-        dns_reply = resolve_query(dns_request, ctx=Ctx())
         return Response(
-            content=bytes(dns_reply.pack()),
+            content=handle_dns(data, ctx),
             media_type="application/dns-message"
         )
         
@@ -53,14 +55,13 @@ async def dns_query(request: Request):
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Bad DNS message: {e}")
     
-    class Ctx:
-        client_ip = request.client.host
-        client_port = request.client.port
-        protocol = "https"
-        
-    dns_reply = resolve_query(dns_request, Ctx())
+    ctx = DNSContext(
+        client_ip=request.client.host,
+        client_port=request.client.port,
+        protocol="https"
+    )
     
     return Response(
-        content=bytes(dns_reply.pack()),
+        content=handle_dns(data, ctx),
         media_type="application/dns-message"
     )

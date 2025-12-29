@@ -1,6 +1,6 @@
 from dnslib import DNSRecord
 from dns.resolver import resolve_query
-from dns.ctx import DNSContext
+from dns.context import DNSContext
 
 def handle_dns(raw: bytes, ctx: DNSContext) -> bytes:
     dns_request = DNSRecord.parse(raw)
